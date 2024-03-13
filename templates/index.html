@@ -1,7 +1,8 @@
-<!doctype html>
-<title>Hello from Flask</title>
-{% if name %}
-  <h1>Hello {{ name }}!</h1>
-{% else %}
-  <h1>Hello, World!</h1>
-{% endif %}
+{% extends "layout.html" %}
+
+{% block content %}
+    <h2>Bienvenue, {{ username }}!</h2>
+    <p>Vous êtes connecté.</p>
+    <a href="{{ url_for('logout') }}">Se déconnecter</a>
+{% endblock %}
+
