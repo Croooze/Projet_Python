@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Inscription</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <h1>Inscription</h1>
-    <form action="{{ url_for('register') }}" method="post">
+    <form action="{{ url_for('inscription') }}" method="post">
         <label for="username">Nom d'utilisateur :</label>
         <input type="text" id="username" name="username" required><br>
         <label for="password">Mot de passe :</label>
         <input type="password" id="password" name="password" required><br>
-        <button type="submit">S'inscrire</button>
+        <button type="submit">Se connecter</button>
     </form>
 </body>
 </html>
