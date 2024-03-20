@@ -22,7 +22,7 @@ with app.app_context():
     if not os.path.exists(DATABASE):
         db = get_db()
         with app.open_resource('schema.sql', mode='r') as f:
-            db.cursor().executescript(f.read())
+            db.executescript(f.read())
         db.commit()
         print("La base de données a été créée avec succès.")
     else:
@@ -36,6 +36,10 @@ def close_connection(exception):
 
 # ROUTES
 
+@app.route('/')
+def redirect_to_login():
+    return redirect(url_for('login'))
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -48,7 +52,7 @@ def login():
         user = cursor.fetchone()
 
         if user:
-            if (user['password'], password):
+            if bcrypt.check_password_hash(user['password'], password):
                 session['logged_in'] = True
                 session['username'] = username
                 return redirect(url_for('index'))  
@@ -57,10 +61,6 @@ def login():
         else:
             return 'Nom d\'utilisateur non trouvé. Veuillez vous inscrire.'
     return render_template('login.html')
-
-@app.route('/index')
-def index():
-    return render_template('index.html')
 
 @app.route('/inscription', methods=['GET', 'POST'])
 def inscription():
@@ -80,7 +80,42 @@ def inscription():
             cursor.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, hashed_password))
             db.commit()
             flash('Compte créé avec succès! Vous pouvez maintenant vous connecter.', 'success')
-            return redirect(url_for('login'))
+            return redirect(url_for('index'))
 
     return render_template('inscription.html')
 
+@app.route('/index')
+def index():
+    if 'username' in session:
+        username = session['username']
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute('SELECT id, note FROM notes WHERE user_id = (SELECT id FROM users WHERE username = ?)', (username,))
+        notes = cursor.fetchall()
+        return render_template('index.html', notes=notes)
+    else:
+        return redirect(url_for('login'))
+
+# Gére l'ajout d'une note de la liste sur la page index et en base de donnée
+    
+@app.route('/add_note', methods=['POST'])
+def add_note():
+    if 'username' in session:
+        note = request.form['note']
+        username = session['username']
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute('INSERT INTO notes (user_id, note) VALUES ((SELECT id FROM users WHERE username = ?), ?)', (username, note))
+        db.commit()
+    return redirect(url_for('index'))
+
+# Gére la suppression d'une note de la liste sur la page index et en base de donnée
+
+@app.route('/delete_note/<int:note_id>', methods=['POST'])
+def delete_note(note_id):
+    if 'username' in session:
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute('DELETE FROM notes WHERE id = ?', (note_id,))
+        db.commit()
+    return redirect(url_for('index'))

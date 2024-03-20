@@ -3,10 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <title>Index</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative; /* Permet de positionner les éléments enfants en fonction de ce conteneur */
+            z-index: 1; /* Assure que le contenu est au-dessus de l'arrière-plan sombre */
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .todolist-section {
+            margin-top: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .add-note-btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            border: none;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-note-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .add-note-form {
+            display: none; /* Masquer le formulaire pop-up par défaut */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 9999; /* Assurer que le formulaire est au-dessus de tout le reste */
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Couleur d'arrière-plan sombre semi-transparente */
+            z-index: 999; /* Assurer que l'overlay est au-dessus du contenu */
+            display: none; /* Masquer l'overlay par défaut */
+        }
+
+        input[type="text"] {
+            width: calc(100% - 70px);
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        button[type="submit"] {
+            padding: 8px 12px;
+            background-color: #007bff;
+            border: none;
+            color: #fff;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h1>Bienvenue à vous !</h1>
+    <div class="container">
+        {% if 'username' in session %}
+        <h1>Bienvenue à vous, {{ session['username'] }} !</h1>
+        <div class="todolist-section">
+            <h2>Votre todolist :</h2>
+            <ul>
+                {% for note in notes %}
+                <li>
+                    <span>{{ note['note'] }}</span>
+                    <form action="{{ url_for('delete_note', note_id=note['id']) }}" method="post">
+                        <button type="submit">Supprimer</button>
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <button id="add-note-btn" class="add-note-btn">Ajouter une note</button> <!-- Bouton pour ouvrir le formulaire pop-up -->
+        <div id="add-note-form" class="add-note-form">
+            <form action="{{ url_for('add_note') }}" method="post">
+                <input type="text" name="note" placeholder="Nouvelle tâche">
+                <button type="submit">Valider</button>
+            </form>
+        </div>
+        <div id="overlay" class="overlay"></div> 
+        {% endif %}
+    </div>
+
+    <script>
+        const addNoteBtn = document.getElementById('add-note-btn');
+        const addNoteForm = document.getElementById('add-note-form');
+
+        addNoteBtn.addEventListener('click', () => {
+            addNoteForm.style.display = 'block';
+        });
+    </script>
 </body>
 </html>
