@@ -11,6 +11,7 @@ h1 {
 form {
     width: 300px;
     margin: 0 auto;
+    margin-bottom: 20px;
     background-color: #fff;
     padding: 20px;
     border-radius: 5px;
@@ -32,6 +33,7 @@ input[type="password"] {
 button {
     width: 100%;
     padding: 10px;
+    margin-bottom: 30px;
     background-color: #007bff;
     border: none;
     color: #fff;
@@ -41,3 +43,27 @@ button {
 button:hover {
     background-color: #0056b3;
 }
+
+/* Nouveau style pour le lien */
+a.button {
+    display: block; /* Convertir en bloc pour occuper toute la largeur */
+    width: calc(100% - 21px); /* Ajuster la largeur */
+    padding: 10px;
+    margin-bottom: 10px; /* Ajouter une marge en bas pour séparer les éléments */
+    background-color: #007bff;
+    border: none;
+    color: #fff;
+    text-align: center;
+    text-decoration: none; /* Supprimer le soulignement du lien */
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+a.button:hover {
+    background-color: #0056b3;
+}
+
+.flash-message {
+    color: red;
+}
+

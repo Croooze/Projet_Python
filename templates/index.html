@@ -104,6 +104,43 @@
         button[type="submit"]:hover {
             background-color: #0056b3;
         }
+
+        .logout-btn {
+            padding: 8px 12px;
+            background-color: #dc3545;
+            border: none;
+            color: #fff;
+            border-radius: 3px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            position: absolute;
+            top: 20px; /* ajustez cette valeur selon votre mise en page */
+            right: 20px; /* ajustez cette valeur selon votre mise en page */
+        }
+
+        .logout-btn:hover {
+            background-color: #c82333; 
+        }
+
+        .change-password-btn {
+            display: inline-block;
+            padding: 8px 12px;
+            background-color: #007bff;
+            border: none;
+            color: #fff;
+            border-radius: 3px;
+            cursor: pointer;
+            text-decoration: none;
+            position: absolute;
+            top: 70px; /* ajustez cette valeur selon votre mise en page */
+            right: 20px; /* ajustez cette valeur selon votre mise en page */
+            
+        }
+
+        .change-password-btn:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -133,6 +170,9 @@
         <div id="overlay" class="overlay"></div> 
         {% endif %}
     </div>
+    <a href="{{ url_for('logout') }}" class="logout-btn">Déconnexion</a>
+    <a href="{{ url_for('change_password') }}" class="change-password-btn">Modifier le mot de passe</a>
+
 
     <script>
         const addNoteBtn = document.getElementById('add-note-btn');
